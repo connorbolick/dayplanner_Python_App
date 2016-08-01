@@ -1,0 +1,18 @@
+{%for act in activity%}
+  <tr>
+    <td>{{act['type']}}</td>
+    <td>{{act['category']}}</td>
+    <td>{{act['address']}}</td>
+
+    {% if act != activity[0] %}
+    <td><form action='/delete/{{act['id']}}/{{plan_id}}' method='get'>
+          <input class='btn btn-warning' type="submit" value="delete">
+       </form>
+    </td>
+    {% else %}
+    <td>
+
+    </td>
+    {% endif %}
+  </tr>
+{%endfor%}

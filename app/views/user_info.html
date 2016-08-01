@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="static/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+  <body>
+    <nav id='nav' class='navbar navbar-static-top navbar-light bg-faded'>
+      <a id='logo' class='navbar-brand bebas' href='#'>Get Out</a>
+      <ul class="nav navbar-nav pull-right">
+        <li class="active"><a class='white' href="/user_info"><span class='glyphicon glyphicon-home'></span> Home</a></li>
+        <li><a class='white' href="/logout"><span class='glyphicon glyphicon-user'></span> Logout</a></li>
+      </ul>
+    </nav>
+  <div class="row">
+		<div class="col-md-7 col-md-offset-5" class="active">
+    		<h2>Welcome {{session['name']}}!</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{message}}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    	</div>
+   </div>
+   <div class="container">
+    	<div id='planner_box' class="col-md-4 col-md-offset-2" class="active">
+
+	    	<form class='col-md-9' action='/options' method='post'>
+          <h3><span class='glyphicon glyphicon-plane'></span> Plan your Day</h3>
+	    		<label>City:</label><br><input class='form-control' type="text" name="location"><br>
+	    		<label>Start-time:</label><br><input class='form-control' type="time" name="start_time" ><br>
+	    		<label>End-time:</label><br><input class='form-control' type="time" name="end_time" ><br>
+	    		<label>Address<br>(The more specific the better):</label><br><input class='form-control' type="text" name="start_location" ><br>
+	    		<label>Transportation:</label><br><select class='form-control' type="text" name="transportation" >
+	    			<option value='20'>Walk</option>
+	    			<option value='300'>Automobile</option>
+	    		</select><br>
+	    		<input class='btn btn-success' type="submit" value="Make a Plan">
+	    	</form>
+
+    	</div>
+
+
+    	<div id='past_trips' class="col-md-4 col-md-offset-1" class="active">
+    		<h3><span class='glyphicon glyphicon-cloud'></span> Past Trips</h3>
+        <ul class='list-group'>
+          {%for trip in trips%}
+      		  <li class='list-group-item'>
+              <a href='/final_plan/{{trip['id']}}'><span class='glyphicon glyphicon-chevron-right'></span> {{trip['city']}}</a>
+            </li>
+          {%endfor%}
+        </ul>
+
+
+    	</div>
+    </div>
+
+
+
+  </body>
+</html>

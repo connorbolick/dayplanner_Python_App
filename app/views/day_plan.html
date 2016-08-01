@@ -1,0 +1,239 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="static/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script>
+      var locations =[];
+      var coordinates = {};
+      $(document).ready(function(){
+        $('#mealform').submit(function(){
+
+          $.post('/meals/{{plan_id}}', $(this).serialize(), function(res){
+            $('#results').html(res);
+          })
+          return false;
+        })
+        $('#activityform').submit(function(){
+
+          $.post('/activity/{{plan_id}}', $(this).serialize(), function(res){
+            $('#results').html(res);
+          })
+          return false;
+        })
+
+      })
+      // $(document).ready(function(){
+      //   $('#activity').hide();
+      //   // $("#table").hide();
+      //   $('#meal').hide();
+
+      //   $('#add_activity').click(function(){
+      //     $("#activity").show();
+      //     return false;
+      //   });
+      //   $('#add_meal').click(function(){
+      //     $("#meal").show();
+      //     return false;
+      //   });
+      //   $('#submit_activity').click(function(){
+      //     $("#table").show();
+      //     $("#activity").hide();
+      //     return false;
+      //   });
+      //   $('#submit_meal').click(function(){
+      //     $("#table").show();
+      //     $("#meal").hide();
+          // return false;
+      //   });
+      // });
+    </script>
+    <style>
+    @font-face{
+        font-family: Bebas;
+        src: url('../static/fonts/BebasNeue Bold.otf')
+    }
+    .bebas{
+      font-family: Bebas;
+    }
+    nav{
+      background-color: #526578;
+    }
+    #nav{
+      margin-bottom: 0px;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 60%;
+    }
+    #floating-panel {
+      position: absolute;
+      top: 10px;
+      left: 25%;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+      text-align: center;
+      font-family: 'Roboto','sans-serif';
+      line-height: 30px;
+      padding-left: 10px;
+    }
+    #weather{
+      background-image: url({{img}});
+      background-size: cover;
+    }
+    .white{
+      color: white;
+    }
+    #transbox{
+      background-color: #ffffff;
+      opacity: 0.6;
+      filter: alpha(opacity=60);
+    }
+    .notrans{
+      font-weight: bold;
+      color: #000000;
+    }
+  </style>
+  </head>
+  <body>
+    <nav id='nav' class='navbar navbar-static-top navbar-light bg-faded'>
+      <a id='logo' class='navbar-brand bebas white' href='#'>Get Out</a>
+      <ul class="nav navbar-nav pull-right">
+        <li class="active"><a class='white' href="/user_info"><span class='glyphicon glyphicon-home'></span> Home</a></li>
+        <li><a class='white' href="/logout"><span class='glyphicon glyphicon-user'></span> Logout</a></li>
+      </ul>
+    </nav>
+		<div id='weather' class="jumbotron text-center" class="active">
+      <div id='transbox' class='container'>
+
+      <h2 class='white notrans' >Forecast: {{weather_info['weather'][0]['description']}}</h2>
+      <h2 class='white notrans'>Approximate Temperature: {{temp}} F&#176;</h2>
+       {% with messages = get_flashed_messages() %}
+           {% if messages %}
+                   <p>{{message}}</p>
+           {% endif %}
+       {% endwith %}
+
+     </div>
+
+    	</div>
+   <div class="container">
+     <div class='container'>
+       <h2>What do you want to do today?</h3>
+     </div>
+
+     <div id= "meal" class="col-md-6" class="active">
+
+       <form id='mealform' class='col-md-7' action='/meals/{{plan_id}}' method='post'>
+         <h4>Looking for food?</h4>
+        <h6>What kind?:</h6>
+         <select class='form-control' name='meal'>
+           <option>-</option>
+           <option>Chinese</option>
+           <option>Korean</option>
+           <option>Indian</option>
+           <option>Ethiopian</option>
+           <option>French</option>
+           <option>American</option>
+           <option>Breakfast</option>
+         </select>
+         <h6>Price Range:</h6>
+         <select class='form-control' name='price'>
+           <option>$</option>
+           <option>$$</option>
+           <option>$$$</option>
+           <option>$$$$</option>
+         </select><br><br>
+         <label>Feeling like something else?:</label><br><input class='form-control' type="text" name="meal_alt"><br>
+         <label>Duration:<br><input class='form-control' type="text" name="duration_meal"></label><br>
+         <input id="submit_meal" class='btn btn-info' type="submit" value="Search">
+       </form>
+     </div>
+     <div id ="activity"class="col-md-6" class="active">
+
+       <form id='activityform' class='col-md-7' action='/activity/{{plan_id}}' method='post'>
+         <h4>Looking for something to do?</h4>
+        <h6>Indoors</h6>
+         <select class='form-control' name='activity'>
+           <option>-</option>
+           <option>Museums</option>
+           <option>sports</option>
+         </select>
+         <h6>Outdoors</h6>
+          <select class='form-control' name='activity_alt'>
+             <option>-</option>
+             <option>Sight Seeing</option>
+             <option>Water activities</option>
+             <option>Trails</option>
+             <option>Parks</option>
+             <option>sports</option>
+         </select><br><br>
+         <label>Feeling like something else?:</label><br><input class='form-control' type="text" name="activity_alt_alt"><br>
+         <label>Duration:<br><input class='form-control' type="text" name="duration_activity"></label><br>
+         <input id="submit_activity" class='btn btn-info' type="submit" value="Search">
+       </form>
+     </div>
+   </div>
+   <div style='margin-bottom: 30px;'class='container'>
+     <div id='results' class='container col-md-6'>
+
+     </div>
+     <div id='map' class='container col-md-6'>
+
+     </div>
+   </div>
+
+   <div class="container">
+     <div class="col-md-12"class="active">
+
+     <table class="table table-bordered table-striped">
+
+      <thead>
+        <tr>
+          <td>Category</td>
+          <td>Your Preference</td>
+          <td>Address</td>
+          <td>Changed your mind?</td>
+        </tr>
+      </thead>
+
+      <tbody id="table">
+        {%for act in activity%}
+          <tr>
+            <td>{{act['type']}}</td>
+            <td>{{act['category']}}</td>
+            <td>{{act['address']}}</td>
+            {% if act != activity[0] %}
+            <td><form action='/delete/{{act["id"]}}/{{plan_id}}' method='get'>
+                  <input class='btn btn-warning' type="submit" value="delete">
+               </form>
+            </td>
+            {% else %}
+            <td>
+
+            </td>
+            {% endif %}
+          </tr>
+        {%endfor%}
+      </tbody>
+
+     </table>
+     <form action='/final_plan/{{plan_id}}'>
+       <input class='btn btn-success' type="submit" value="Plan Your Day" name="pyd">
+     </form>
+     </div>
+
+    </div>
+
+
+
+
+  </body>
+</html>
